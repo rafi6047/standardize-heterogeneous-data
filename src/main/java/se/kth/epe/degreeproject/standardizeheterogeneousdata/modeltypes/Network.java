@@ -1,9 +1,9 @@
-package se.kth.epe.degreeproject.modeltypes;
+package se.kth.epe.degreeproject.standardizeheterogeneousdata.modeltypes;
 
 /**
  * Created by Rafi on 2017-02-18.
  */
-public class Network {
+public class Network extends AbstractModel {
     private boolean portSecurity;
     private boolean dNSSec;
 

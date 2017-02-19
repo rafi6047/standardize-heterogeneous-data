@@ -1,9 +1,9 @@
-package se.kth.epe.degreeproject.modeltypes;
+package se.kth.epe.degreeproject.standardizeheterogeneousdata.modeltypes;
 
 /**
  * Created by Rafi on 2017-02-18.
  */
-public class OperatingSystem {
+public class OperatingSystem extends AbstractModel {
     private boolean aSLR;
     private boolean dEP;
     private boolean staticARPTables;
@@ -57,5 +57,17 @@ public class OperatingSystem {
 
     public void setHostFirewall(boolean hostFirewall) {
         this.hostFirewall = hostFirewall;
+    }
+
+    @Override
+    public String toString() {
+        return "OperatingSystem{" +
+                "aSLR=" + aSLR +
+                ", dEP=" + dEP +
+                ", staticARPTables=" + staticARPTables +
+                ", patched=" + patched +
+                ", antiMalware=" + antiMalware +
+                ", hostFirewall=" + hostFirewall +
+                "} " + super.toString();
     }
 }

@@ -1,9 +1,9 @@
-package se.kth.epe.degreeproject.modeltypes;
+package se.kth.epe.degreeproject.standardizeheterogeneousdata.modeltypes;
 
 /**
  * Created by Rafi on 2017-02-18.
  */
-public class Firewall {
+public class Firewall extends AbstractModel {
     private boolean knownRuleSet;
     private boolean enabled;
 
