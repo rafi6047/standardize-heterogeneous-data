@@ -11,6 +11,10 @@ public class OperatingSystem extends AbstractModel {
     private boolean antiMalware;
     private boolean hostFirewall;
 
+    public OperatingSystem() {
+        this.setModelType(this.getClass().getSimpleName());
+    }
+
     public boolean isaSLR() {
         return aSLR;
     }
@@ -61,13 +65,13 @@ public class OperatingSystem extends AbstractModel {
 
     @Override
     public String toString() {
-        return "OperatingSystem{" +
+        return super.toString() + "OperatingSystem{" +
                 "aSLR=" + aSLR +
                 ", dEP=" + dEP +
                 ", staticARPTables=" + staticARPTables +
                 ", patched=" + patched +
                 ", antiMalware=" + antiMalware +
                 ", hostFirewall=" + hostFirewall +
-                "} " + super.toString();
+                "} ";
     }
 }

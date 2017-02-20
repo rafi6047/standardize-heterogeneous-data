@@ -11,6 +11,7 @@ out/
 /gradlew
 /gradlew.bat
 /gradle/
+*.jar
 ~
 
 classes/
