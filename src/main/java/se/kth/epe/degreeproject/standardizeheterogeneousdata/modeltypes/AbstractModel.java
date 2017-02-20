@@ -6,6 +6,7 @@ package se.kth.epe.degreeproject.standardizeheterogeneousdata.modeltypes;
 public class AbstractModel {
 
     private String modelName;
+    private String modelType;
 
     public String getModelName() {
         return modelName;
@@ -15,10 +16,19 @@ public class AbstractModel {
         this.modelName = modelName;
     }
 
+    public String getModelType() {
+        return modelType;
+    }
+
+    public void setModelType(String modelType) {
+        this.modelType = modelType;
+    }
+
     @Override
     public String toString() {
         return "AbstractModel{" +
                 "modelName='" + modelName + '\'' +
+                ", modelType='" + modelType + '\'' +
                 '}';
     }
 }
