@@ -1,14 +1,18 @@
 package se.kth.epe.degreeproject.standardizeheterogeneousdata.modelcreation;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import se.kth.epe.degreeproject.standardizeheterogeneousdata.modeltypes.AbstractModel;
 import se.kth.epe.degreeproject.standardizeheterogeneousdata.modeltypes.OperatingSystem;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Rafi on 2017-02-18.
  */
+@Component
 public class Models {
 
     private Map<String, AbstractModel> modelMap;
