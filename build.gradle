@@ -27,8 +27,15 @@ repositories {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+def versions = [
+        'jersey': '2.25',
+]
+
 dependencies {
+    compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
+    compile "com.arangodb:arangodb-java-driver:3.0.0"
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile "org.glassfish.jersey.core:jersey-server:${versions.jersey}"
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile group: 'junit', name: 'junit', version: '4.11'
 

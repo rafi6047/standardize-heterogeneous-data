@@ -2,6 +2,8 @@ package se.kth.epe.degreeproject.standardizeheterogeneousdata.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,7 @@ import javax.annotation.PostConstruct;
  */
 @RestController
 public class ModelRestController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelRestController.class);
 
     @Autowired
     private Models models;
@@ -30,6 +33,7 @@ public class ModelRestController {
 
     @RequestMapping("/getmodel/{modelname}")
     public AbstractModel getModel(@PathVariable("modelname") String modelName) {
+        LOGGER.info("Received request for model: " + modelName);
         ObjectMapper jacksonMapper = new ObjectMapper();
         jacksonMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         return models.getModel(modelName);
