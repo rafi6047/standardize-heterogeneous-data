@@ -33,7 +33,7 @@ def versions = [
 
 dependencies {
     compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
-    compile "com.arangodb:arangodb-java-driver:3.0.0"
+    compile "com.arangodb:arangodb-java-driver:3.1.4"
     compile("org.springframework.boot:spring-boot-starter-web")
     compile "org.glassfish.jersey.core:jersey-server:${versions.jersey}"
     testCompile('org.springframework.boot:spring-boot-starter-test')

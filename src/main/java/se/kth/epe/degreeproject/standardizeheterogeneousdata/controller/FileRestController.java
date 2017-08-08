@@ -5,18 +5,22 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import se.kth.epe.degreeproject.standardizeheterogeneousdata.adapter.Adapter;
+import se.kth.epe.degreeproject.standardizeheterogeneousdata.adapter.FileType;
 import se.kth.epe.degreeproject.standardizeheterogeneousdata.modelcreation.Models;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,11 +48,17 @@ public class FileRestController {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    @RequestMapping(method = RequestMethod.POST)
-    public List<String> getApplicationType(@RequestBody String requestBody) {
-        LOGGER.info("Received request for file content: \n" + requestBody);
+    @RequestMapping(method = RequestMethod.POST, value = "/{fileType}")
+    public List<String> getApplicationTypeForMSPowerShellFile(@PathVariable String fileType, @RequestBody String requestBody) {
 
-        return adapter.parseFile(requestBody);
+        FileType fileTypeEnum = FileType.contains(fileType);
+        if (fileTypeEnum == null) {
+            LOGGER.info("File type not supported: " + fileType);
+            return Collections.emptyList();
+        }
+
+        LOGGER.info("Received request for file type: " + fileType + ". Content: \n" + requestBody);
+
+        return adapter.parseFile(requestBody, fileTypeEnum);
     }
-
 }
