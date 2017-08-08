@@ -9,11 +9,12 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.1.RELEASE")
     }
 }
-
+apply plugin: 'application'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+mainClassName = "se.kth.epe.degreeproject.standardizeheterogeneousdata.server.Application"
 
 jar {
     baseName = 'standardize-heterogeneous-data-rest-service'

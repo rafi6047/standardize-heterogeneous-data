@@ -23,7 +23,6 @@ public class NetstatFileAdapter {
 
         List<String> lines = Arrays.asList(netstat.split("\\r\\n|\\n|\\r"));
         LinuxPort.LinuxService linuxService;
-        System.out.println("rafi: " + lines.size());
         for (String line : lines) {
             // Now create matcher object from String to be scanned to find the pattern.
             Matcher matcher = regularExpression.matcher(line);
