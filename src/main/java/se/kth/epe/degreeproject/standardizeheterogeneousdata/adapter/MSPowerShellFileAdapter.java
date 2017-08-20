@@ -15,13 +15,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MSPowerShellFileAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(MSPowerShellFileAdapter.class);
 
-    public static List<String> parseMSPowerShellFile(final String xml) throws ParserConfigurationException, IOException, SAXException {
-        List<String> modelTypeList = new ArrayList<>();
+    public static Map<String, Object> parseMSPowerShellFile(final String xml) throws ParserConfigurationException, IOException, SAXException {
+        Map<String, Object> modelTypeMap = new HashMap<>();
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -42,12 +44,12 @@ public class MSPowerShellFileAdapter {
 
                 if (eElement.getAttribute("N").equalsIgnoreCase("DisplayName")) {
                     LOGGER.info(eElement.getTextContent());
-                    modelTypeList.add(eElement.getTextContent());
+                    modelTypeMap.put(eElement.getTextContent(), eElement.getTextContent());
                 }
             }
         }
 
-        return modelTypeList;
+        return modelTypeMap;
 
     }
 }

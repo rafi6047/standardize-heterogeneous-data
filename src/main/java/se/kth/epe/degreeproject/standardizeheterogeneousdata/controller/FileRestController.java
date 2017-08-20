@@ -17,11 +17,11 @@ import se.kth.epe.degreeproject.standardizeheterogeneousdata.modelcreation.Model
 import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Rafi on 2017-02-22.
@@ -49,12 +49,12 @@ public class FileRestController {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     @RequestMapping(method = RequestMethod.POST, value = "/{fileType}")
-    public List<String> getApplicationTypeForMSPowerShellFile(@PathVariable String fileType, @RequestBody String requestBody) {
+    public Map<String, Object> getApplicationTypeForMSPowerShellFile(@PathVariable String fileType, @RequestBody String requestBody) {
 
         FileType fileTypeEnum = FileType.contains(fileType);
         if (fileTypeEnum == null) {
             LOGGER.info("File type not supported: " + fileType);
-            return Collections.emptyList();
+            return new HashMap<>();
         }
 
         LOGGER.info("Received request for file type: " + fileType + ". Content: \n" + requestBody);

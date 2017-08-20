@@ -1,0 +1,51 @@
+docker run \
+    --name model_db_neo4j \
+    --publish=7474:7474 --publish=7687:7687 \
+    --volume=$HOME/neo4j/data:/data \
+    --volume=$HOME/neo4j/logs:/logs \
+    --volume=$HOME/IntellijProjects/standardize-heterogeneous-data/src/main/resources/datafiles:/var/lib/neo4j/import/datafiles \
+    neo4j:3.0
+
+user: neo4j
+password: neo4js
+
+
+neo4j commands:
+loading linux port services from csv file:
+LOAD CSV WITH HEADERS FROM "file:///datafiles/linux-ports.csv" AS row
+CREATE (n:LinuxPort { portNo: toInt(row.portNo), serviceName: row.serviceName, serviceDescription: row.serviceDescription,
+                      entryType: row.entryType, dependable: (case row.dependable when "true" then true else false end)})
+
+create index:
+CREATE INDEX ON :LinuxPort(portNo)
+
+Query for LinuxPort 1:
+MATCH (port: LinuxPort {portNo: 1}) RETURN port
+
+Query for LinuxPort with serviceName ssh:
+MATCH (port: LinuxPort {serviceName: "ssh"}) RETURN port
+
+Create ontology nodes:
+CREATE (CommonPorts:CommonPorts{type: "CommonPorts"})
+CREATE (OntologyRoot:OntologyRoot{type: "OntologyRoot"})
+CREATE (Software:Software{type: "Software"})
+CREATE (Client:Client{type: "Client"})
+CREATE (OperatingSystem:OperatingSystem{type: "OperatingSystem"})
+CREATE (VulnerabilityScanner:VulnerabilityScanner{type: "VulnerabilityScanner"})
+CREATE (Antivirus:Antivirus{type: "Antivirus"})
+CREATE (Firewall:Firewall{type: "Firewall"})
+CREATE (HDIS:HDIS{type: "HDIS"})
+CREATE (Datastore:Datastore{type: "Datastore"})
+
+
+Connecting all LinuxPort with CommonPorts with relation IS_A:
+MATCH (a:LinuxPort),(b:CommonPorts) CREATE (a)-[r:IS_A]->(b)
+MATCH (a:CommonPorts),(b:OntologyRoot) CREATE (a)-[r:IS_A]->(b)
+MATCH (a:Software),(b:OntologyRoot) CREATE (a)-[r:IS_A]->(b)
+MATCH (a:Client),(b:Software) CREATE (a)-[r:IS_A]->(b)
+MATCH (a:OperatingSystem),(b:Software) CREATE (a)-[r:IS_A]->(b)
+MATCH (a:VulnerabilityScanner),(b:Software) CREATE (a)-[r:IS_A]->(b)
+MATCH (a:Antivirus),(b:Software) CREATE (a)-[r:IS_A]->(b)
+MATCH (a:Firewall),(b:Software) CREATE (a)-[r:IS_A]->(b)
+MATCH (a:HDIS),(b:Software) CREATE (a)-[r:IS_A]->(b)
+MATCH (a:Datastore),(b:Software) CREATE (a)-[r:IS_A]->(b)

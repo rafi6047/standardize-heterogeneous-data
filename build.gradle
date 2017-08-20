@@ -36,6 +36,7 @@ dependencies {
     compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
     compile "com.arangodb:arangodb-java-driver:3.1.4"
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.data:spring-data-neo4j:4.2.6.RELEASE")
     compile "org.glassfish.jersey.core:jersey-server:${versions.jersey}"
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile group: 'junit', name: 'junit', version: '4.11'
