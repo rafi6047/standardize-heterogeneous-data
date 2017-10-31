@@ -57,7 +57,8 @@ public class FileRestController {
             return new HashMap<>();
         }
 
-        LOGGER.info("Received request for file type: " + fileType + ". Content: \n" + requestBody);
+        LOGGER.info("Received request for file type: " + fileType);
+        LOGGER.debug("File content: \n" + requestBody);
 
         return adapter.parseFile(requestBody, fileTypeEnum);
     }
