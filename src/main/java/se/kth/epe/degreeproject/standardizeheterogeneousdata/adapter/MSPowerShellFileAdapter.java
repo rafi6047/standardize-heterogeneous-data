@@ -30,22 +30,77 @@ public class MSPowerShellFileAdapter {
         InputSource is = new InputSource(new StringReader(xml));
         Document doc = builder.parse(is);
         doc.getDocumentElement().normalize();
-        LOGGER.info("Root element :" + doc.getDocumentElement().getNodeName());
 
-        NodeList nList = doc.getElementsByTagName("S");
+        NodeList msList = doc.getElementsByTagName("MS");
 
-        for (int i = 0; i < nList.getLength(); i++) {
+        for (int ms = 0; ms < msList.getLength(); ms++) {
+            String key = null;
+            String value = null;
 
-            Node nNode = nList.item(i);
+            Node msNode = msList.item(ms);
+            Element msElement = (Element) msNode;
 
-            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+            NodeList sList = msElement.getElementsByTagName("S");
+            for ( int i = 0; i < sList.getLength(); i++) {
 
-                Element eElement = (Element) nNode;
+                Node sNode = sList.item(i);
 
-                if (eElement.getAttribute("N").equalsIgnoreCase("DisplayName")) {
-                    LOGGER.info(eElement.getTextContent());
-                    modelTypeMap.put(eElement.getTextContent(), eElement.getTextContent());
+                if (sNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                    Element sElement = (Element) sNode;
+
+                    if (sElement.getAttribute("N").equalsIgnoreCase("DisplayName")) {
+                        if (key == null) {
+                            key = sElement.getTextContent();
+                        }
+                        value = (value == null ? "DisplayName: " + sElement.getTextContent() : value + ", DisplayName: " + sElement.getTextContent());
+                    } else if (sElement.getAttribute("N").equalsIgnoreCase("Publisher")) {
+                        if (key == null) {
+                            key = sElement.getTextContent();
+                        }
+                        value = (value == null ? "Publisher: " + sElement.getTextContent() : value + ", Publisher: " + sElement.getTextContent());
+                    }
                 }
+            }
+            if (key != null && value != null) {
+                modelTypeMap.put(key, value);
+            }
+        }
+
+
+        NodeList propsList = doc.getElementsByTagName("Props");
+
+        for (int propsCounter = 0; propsCounter < propsList.getLength(); propsCounter++) {
+            String key = null;
+            String value = null;
+
+            Node msNode = propsList.item(propsCounter);
+            Element msElement = (Element) msNode;
+
+            NodeList sList = msElement.getElementsByTagName("S");
+            for ( int i = 0; i < sList.getLength(); i++) {
+
+                Node sNode = sList.item(i);
+
+                if (sNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                    Element sElement = (Element) sNode;
+
+                    if (sElement.getAttribute("N").equalsIgnoreCase("name")) {
+                        if (key == null) {
+                            key = sElement.getTextContent();
+                        }
+                        value = (value == null ? "name: " + sElement.getTextContent() : value + ", name: " + sElement.getTextContent());
+                    } else if (sElement.getAttribute("N").equalsIgnoreCase("objectClass")) {
+                        if (key == null) {
+                            key = sElement.getTextContent();
+                        }
+                        value = (value == null ? "objectClass: " + sElement.getTextContent() : value + ", objectClass: " + sElement.getTextContent());
+                    }
+                }
+            }
+            if (key != null && value != null) {
+                modelTypeMap.put(key, value);
             }
         }
 
