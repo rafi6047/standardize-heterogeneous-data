@@ -71,7 +71,7 @@ public class FileRestController {
         LOGGER.info("Received request for file type: " + fileType);
         LOGGER.debug("File content: \n" + requestBody);
 
-        return adapter.parseFile(requestBody, fileTypeEnum);
+        return adapter.parseFile(requestBody.trim(), fileTypeEnum);
     }
 
     @POST

@@ -16,11 +16,14 @@ public class InstalledFileAdapter {
     public Map<String, Object> parseInstalledFile(final String installed) {
         Map<String, Object>  modelTypeMap = new HashMap<>();
         List<String> lines = Arrays.asList(installed.split("\\r\\n|\\n|\\r"));
+        lines = lines.subList(2, lines.size());
 
         for (String line : lines) {
             String[] packageName = line.split(" ");
 
-            modelTypeMap.put(packageName[0], packageName[0]);
+            if (!packageName[0].isEmpty()) {
+                modelTypeMap.put(packageName[0], packageName[0]);
+            }
         }
 
         return modelTypeMap;
