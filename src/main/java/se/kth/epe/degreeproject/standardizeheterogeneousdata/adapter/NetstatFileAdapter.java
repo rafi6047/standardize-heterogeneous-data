@@ -1,7 +1,5 @@
 package se.kth.epe.degreeproject.standardizeheterogeneousdata.adapter;
 
-import org.neo4j.ogm.session.Neo4jSession;
-import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,6 @@ import se.kth.epe.degreeproject.standardizeheterogeneousdata.domain.Port;
 import se.kth.epe.degreeproject.standardizeheterogeneousdata.repository.PortRepository;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

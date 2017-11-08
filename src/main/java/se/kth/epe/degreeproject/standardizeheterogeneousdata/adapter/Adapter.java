@@ -22,21 +22,31 @@ public class Adapter {
     @Autowired
     private NetstatFileAdapter netstatFileAdapter;
 
+    @Autowired
+    private MSPowerShellFileAdapter msPowerShellFileAdapter;
+
+    @Autowired
+    private InstalledFileAdapter installedFileAdapter;
+
     public Map<String, Object> parseFile(final String fileContent, final FileType fileType) {
 
         Map<String, Object>  modelTypeMap = new HashMap<>();
 
-        if (fileType == FileType.MSPOWERSHELL) {
-
-            try {
-                modelTypeMap = MSPowerShellFileAdapter.parseMSPowerShellFile(fileContent);
-            } catch (ParserConfigurationException | SAXException | IOException e) {
-                LOGGER.info("Exception parsing XML: " + e.getStackTrace());
-                LOGGER.info("File is not a valid XML file.");
-            }
-
-        } else if (fileType == FileType.NETSTAT) {
-            modelTypeMap = netstatFileAdapter.parseNetstatFile(fileContent);
+        switch (fileType) {
+            case NETSTAT:
+                modelTypeMap = netstatFileAdapter.parseNetstatFile(fileContent);
+                break;
+            case MSPOWERSHELL:
+                try {
+                    modelTypeMap = msPowerShellFileAdapter.parseMSPowerShellFile(fileContent);
+                } catch (ParserConfigurationException | SAXException | IOException e) {
+                    LOGGER.info("Exception parsing XML: " + e.getStackTrace());
+                    LOGGER.info("File is not a valid XML file.");
+                }
+                break;
+            case INSTALLED:
+                modelTypeMap = installedFileAdapter.parseInstalledFile(fileContent);
+                break;
         }
 
         return modelTypeMap;
