@@ -28,6 +28,12 @@ public class Adapter {
     @Autowired
     private InstalledFileAdapter installedFileAdapter;
 
+    @Autowired
+    private SystemctlFileAdapter systemctlFileAdapter;
+
+    @Autowired
+    private NmapFileAdapter nmapFileAdapter;
+
     public Map<String, Object> parseFile(final String fileContent, final FileType fileType) {
 
         Map<String, Object>  modelTypeMap = new HashMap<>();
@@ -46,6 +52,12 @@ public class Adapter {
                 break;
             case INSTALLED:
                 modelTypeMap = installedFileAdapter.parseInstalledFile(fileContent);
+                break;
+            case systemctl:
+                modelTypeMap = systemctlFileAdapter.parseInstalledFile(fileContent);
+                break;
+            case nmap:
+                modelTypeMap = nmapFileAdapter.parseNmapFile(fileContent);
                 break;
         }
 

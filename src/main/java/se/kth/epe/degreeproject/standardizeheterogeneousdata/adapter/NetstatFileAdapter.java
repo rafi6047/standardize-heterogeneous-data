@@ -20,10 +20,11 @@ public class NetstatFileAdapter {
 
     @Autowired
     private PortRepository portRepository;
-    private String portNoInRequest;
 
     public Map<String, Object> parseNetstatFile(final String netstat) {
         Map<String, Object>  modelTypeMap = new HashMap<>();
+
+        String portNoInRequest;
 
         String pattern = "(\\d+\\.\\d+\\.\\d+\\.\\d+):([0-9]{1,5})";
 
@@ -31,8 +32,6 @@ public class NetstatFileAdapter {
         Pattern regularExpression = Pattern.compile(pattern);
 
         List<String> lines = Arrays.asList(netstat.split("\\r\\n|\\n|\\r"));
-
-        Port port;
 
         for (String line : lines) {
             // Now create matcher object from String to be scanned to find the pattern.
@@ -42,31 +41,42 @@ public class NetstatFileAdapter {
                 String serviceNameInRequest = serviceNameInRequestList[serviceNameInRequestList.length-1].trim();
                 String serviceProtocolInRequest = serviceNameInRequestList[0].trim().split(" ")[0].toLowerCase();
 
-                // first find by port no where entry = manual. if found, see if serviceName = name in the request.
-                // If yes, leave it, else add the service name in learnedServiceAliasList if not existing:
                 portNoInRequest = matcher.group(2).trim() + "/" + serviceProtocolInRequest;
-                port = portRepository.findByDefaultPort(portNoInRequest);
 
-                if (port != null) {
-                    if (port.getServiceName() != serviceNameInRequest) {
+                getApplicationInfoFromPortAndServiceName(modelTypeMap, portNoInRequest, serviceNameInRequest);
+            }
+        }
+
+        return modelTypeMap;
+    }
+
+    protected void getApplicationInfoFromPortAndServiceName(Map<String, Object> modelTypeMap,
+                                                            String portNoInRequest, String serviceNameInRequest) {
+        Port port;
+        // first find by port no where entry = manual. if found, see if serviceName = name in the request.
+        // If yes, leave it, else add the service name in learnedServiceAliasList if not existing:
+        port = portRepository.findByDefaultPort(portNoInRequest);
+
+        if (port != null) {
+            if (port.getServiceName() != serviceNameInRequest) {
 //                        LOGGER.info("didn't match service name: " + serviceNameInRequest + " for port: " + portNoInRequest
 //                                + "\nAdding service name in learnedServiceAliasList");
-                        port.addLearnedServiceAliasList(serviceNameInRequest);
-                        portRepository.save(port);
-                    }
-                } else {
-                    // If not found by port no, then find by service name
-                    port = portRepository.findByServiceName(serviceNameInRequest);
-                }
+                port.addLearnedServiceAliasList(serviceNameInRequest);
+                portRepository.save(port);
+            }
+        } else {
+            // If not found by port no, then find by service name
+            port = portRepository.findByServiceName(serviceNameInRequest);
+        }
 
-                // if still not found then search service name in learned alias list
-                if (port == null) {
-                    port = portRepository.findByLearnedServiceAliasListContaining(serviceNameInRequest);
-                    if (port != null) {
-                        port.setEntry("learned");
-                        port.setSource("Machine learning");
-                    }
-                }
+        // if still not found then search service name in learned alias list
+        if (port == null) {
+            port = portRepository.findByLearnedServiceAliasListContaining(serviceNameInRequest);
+            if (port != null) {
+                port.setEntry("learned");
+                port.setSource("Machine learning");
+            }
+        }
 
 //                Iterable<Map<String, Object>> relation =
 //                        portRepository.findByPortNoTillRoot(portNoInRequest);
@@ -80,10 +90,6 @@ public class NetstatFileAdapter {
 //                Iterable<Map<String, Object>> result = portRepository.myCustomQuery("hi");
 
 
-                modelTypeMap.put(portNoInRequest, port);
-            }
-        }
-
-        return modelTypeMap;
+        modelTypeMap.put(portNoInRequest, port);
     }
 }
