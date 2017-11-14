@@ -19,10 +19,11 @@ public class Port {
     String defaultPort;
     String classType;
     String serviceName;
-    String serviceDescription;
+    String description;
     String entry;
     String source;
-    String learnedServiceAliasList;
+    String keyword;
+    String learnedKeywordList;
 
     public Long getNodeId() {
         return nodeId;
@@ -52,12 +53,12 @@ public class Port {
         this.serviceName = serviceName;
     }
 
-    public String getServiceDescription() {
-        return serviceDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setServiceDescription(String serviceDescription) {
-        this.serviceDescription = serviceDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getEntry() {
@@ -80,29 +81,37 @@ public class Port {
         this.source = source;
     }
 
-    public String getLearnedServiceAliasList() {
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeywordList(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getLearnedKeywordList() {
 //        if (learnedServiceAliasList == null) {
 //            learnedServiceAliasList = "";
 //        }
-        return learnedServiceAliasList;
+        return learnedKeywordList;
     }
-    public void addLearnedServiceAliasList(String serviceAlias) {
-        if (learnedServiceAliasList == null) {
-            setLearnedServiceAliasList(serviceAlias);
+    public void addLearnedKeywordList(String serviceAlias) {
+        if (learnedKeywordList == null) {
+            setLearnedKeywordList(serviceAlias);
             return;
 
         }
 
-        ArrayList<String> learnedServiceAliasList = new ArrayList<>(Arrays.asList(getLearnedServiceAliasList().split(",")));
+        ArrayList<String> learnedServiceAliasList = new ArrayList<>(Arrays.asList(getLearnedKeywordList().split(",")));
 
         if (!learnedServiceAliasList.contains(serviceAlias)) {
             learnedServiceAliasList.add(serviceAlias);
 
-            setLearnedServiceAliasList(String.join(",", learnedServiceAliasList));
+            setLearnedKeywordList(String.join(",", learnedServiceAliasList));
         }
     }
 
-    public void setLearnedServiceAliasList(String learnedServiceAliasList) {
-        this.learnedServiceAliasList = learnedServiceAliasList;
+    public void setLearnedKeywordList(String learnedKeywordList) {
+        this.learnedKeywordList = learnedKeywordList;
     }
 }

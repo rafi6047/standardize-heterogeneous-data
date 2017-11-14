@@ -54,24 +54,24 @@ public class NetstatFileAdapter {
                                                             String portNoInRequest, String serviceNameInRequest) {
         Port port;
         // first find by port no where entry = manual. if found, see if serviceName = name in the request.
-        // If yes, leave it, else add the service name in learnedServiceAliasList if not existing:
+        // If yes, leave it, else add the service name in learnedKeywordList if not existing:
         port = portRepository.findByDefaultPort(portNoInRequest);
 
         if (port != null) {
             if (port.getServiceName() != serviceNameInRequest) {
 //                        LOGGER.info("didn't match service name: " + serviceNameInRequest + " for port: " + portNoInRequest
 //                                + "\nAdding service name in learnedServiceAliasList");
-                port.addLearnedServiceAliasList(serviceNameInRequest);
+                port.addLearnedKeywordList(serviceNameInRequest);
                 portRepository.save(port);
             }
         } else {
-            // If not found by port no, then find by service name
-            port = portRepository.findByServiceName(serviceNameInRequest);
+            // If not found by port no, then find by keyword
+            port = portRepository.findByKeyword(serviceNameInRequest);
         }
 
-        // if still not found then search service name in learned alias list
+        // if still not found then search service name in learned keyword list
         if (port == null) {
-            port = portRepository.findByLearnedServiceAliasListContaining(serviceNameInRequest);
+            port = portRepository.findByLearnedKeywordListContaining(serviceNameInRequest);
             if (port != null) {
                 port.setEntry("learned");
                 port.setSource("Machine learning");

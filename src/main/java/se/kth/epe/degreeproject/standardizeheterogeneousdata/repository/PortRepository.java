@@ -17,9 +17,11 @@ public interface PortRepository extends GraphRepository<Port> {
 
     Port findByServiceName(String serviceName);
 
+    Port findByKeyword(String keyword);
+
     Port findByServiceNameAndEntry(String serviceName, String entry);
 
-    Port findByLearnedServiceAliasListContaining(String serviceName);
+    Port findByLearnedKeywordListContaining(String serviceName);
 
     @Query("MATCH p=shortestPath((o:Port)-[:IS_A*]->(d:OntologyRoot))\n" +
             "WHERE \n" +

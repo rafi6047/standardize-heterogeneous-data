@@ -44,14 +44,14 @@ public class Adapter {
                 break;
             case MSPOWERSHELL:
                 try {
-                    modelTypeMap = msPowerShellFileAdapter.parseMSPowerShellFile(fileContent);
+                    modelTypeMap = msPowerShellFileAdapter.parseFile(fileContent);
                 } catch (ParserConfigurationException | SAXException | IOException e) {
                     LOGGER.info("Exception parsing XML: " + e.getStackTrace());
                     LOGGER.info("File is not a valid XML file.");
                 }
                 break;
             case INSTALLED:
-                modelTypeMap = installedFileAdapter.parseInstalledFile(fileContent);
+                modelTypeMap = installedFileAdapter.parseFile(fileContent);
                 break;
             case systemctl:
                 modelTypeMap = systemctlFileAdapter.parseInstalledFile(fileContent);

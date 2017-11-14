@@ -117,7 +117,6 @@ public class FileRestController {
             Map<String, Object> applicationInfo;
             String applicationInfoString;
             String baseName;
-            String extension;
             File finalOutputDirectory;
 
             String fileType = directory.getName();
@@ -140,13 +139,13 @@ public class FileRestController {
             applicationInfoString = objectMapper.writeValueAsString(applicationInfo);
 
             // write
-            baseName = FilenameUtils.getBaseName(file.getName());
-            extension = FilenameUtils.getExtension(file.getName());
-            finalOutputDirectory = new File(outputDirectory + "/" + directory.getName());
-            finalOutputDirectory.mkdirs();
+            if (!applicationInfo.isEmpty()) {
+                baseName = FilenameUtils.getBaseName(file.getName());
+                finalOutputDirectory = new File(outputDirectory + "/" + directory.getName());
+                finalOutputDirectory.mkdirs();
+                Files.write(Paths.get(finalOutputDirectory + "/" + baseName + "_output.json"), applicationInfoString.getBytes(), StandardOpenOption.CREATE);
+            }
 
-
-            Files.write(Paths.get(finalOutputDirectory + "/" + baseName + "_output." + extension), applicationInfoString.getBytes(), StandardOpenOption.CREATE);
         }
     }
 }

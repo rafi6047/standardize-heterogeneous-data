@@ -13,7 +13,7 @@ import java.util.Map;
 public class InstalledFileAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(InstalledFileAdapter.class);
 
-    public Map<String, Object> parseInstalledFile(final String installed) {
+    public Map<String, Object> parseFile(final String installed) {
         Map<String, Object>  modelTypeMap = new HashMap<>();
         List<String> lines = Arrays.asList(installed.split("\\r\\n|\\n|\\r"));
         lines = lines.subList(2, lines.size());

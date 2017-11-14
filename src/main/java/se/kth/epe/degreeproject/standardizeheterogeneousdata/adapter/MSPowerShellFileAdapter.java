@@ -22,7 +22,7 @@ import java.util.Map;
 public class MSPowerShellFileAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(MSPowerShellFileAdapter.class);
 
-    public static Map<String, Object> parseMSPowerShellFile(final String xml) throws ParserConfigurationException, IOException, SAXException {
+    public static Map<String, Object> parseFile(final String xml) throws ParserConfigurationException, IOException, SAXException {
         Map<String, Object> modelTypeMap = new HashMap<>();
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
