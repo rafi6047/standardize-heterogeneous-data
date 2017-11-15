@@ -10,3 +10,26 @@ user: neo4j
 password: neo4js
 
 cat /Users/Rafi/IntellijProjects/standardize-heterogeneous-data/src/main/resources/datafiles/neo4j-commands.cypher | docker exec --interactive  data_ontology bin/cypher-shell -u neo4j -p neo4js --format plain
+
+mkdir plugins
+pushd plugins
+wget https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.2.3.5/apoc-3.2.3.5-all.jar
+popd
+docker run --rm -e NEO4J_AUTH=none -p 7474:7474 -v $PWD/plugins:/plugins -p 7687:7687 neo4j:3.2.5
+
+
+start n=node:node_auto_index({"visual"}) match (n:Provenance) return n
+                    "order by n.created desc " +
+                    "limit 10";
+
+        String expr = term;
+
+        if(term.contains(" ") || term.contains("\t"))
+            expr = "\"" + term + "\"";
+
+        expr = "'name:" + expr + "~'";
+
+        log.info("search expression=" + expr);
+
+        Map<String,Object>params = new HashMap();
+        params.put("searchCriteria", expr);

@@ -1,4 +1,4 @@
-LOAD CSV WITH HEADERS FROM "file:///datafiles/ports.csv" AS row CREATE (port:Port { classType: row.classType, defaultPort: row.defaultPort, keyword: row.serviceName, serviceName: row.serviceName, description: row.serviceDescription, entry: row.entry, source: row.source});
+LOAD CSV WITH HEADERS FROM "file:///datafiles/ports.csv" AS row CREATE (port:Port { classType: row.classType, defaultPort: row.defaultPort, keyword: row.serviceName, name: row.serviceName, description: row.serviceDescription, entry: row.entry, source: row.source});
 
 LOAD CSV WITH HEADERS FROM "file:///datafiles/operatingSystems.csv" AS row CREATE (operatingSystem:OperatingSystem { classType: row.classType, keyword: row.name, name: row.name,version: row.version,entry: row.entry,source: row.source,tags: row.tags,ESP_DEP: row.ESP_DEP,ASLR: row.ASLR,SEHOP: row.SEHOP,UAC: row.UAC,DNSSEC: row.DNSSEC,Encryption: row.Encryption,Cryptography: row.Cryptography,Firewall_Defender: row.Firewall_Defender,Authentication: row.Authentication});
 
@@ -52,13 +52,12 @@ MATCH (os:OperatingSystem), (client:Client) where os.tags CONTAINS 'client' CREA
 MATCH (os:OperatingSystem), (server:Server) where os.tags CONTAINS 'server' CREATE (os)-[:IS_A]->(server);
 MATCH (vs:VulnerabilityScanner), (misc:Misc) where misc.tags CONTAINS 'VulnerabilityScanner' CREATE (misc)-[:IS_A]->(vs);
 MATCH (os:OperatingSystem {classType:'Windows'}), (misc:Misc) where misc.tags CONTAINS 'WindowsPackage' CREATE (misc)-[:IS_A_PACKAGE_OF]->(os);
+MATCH (os:OperatingSystem {classType:'Windows'}), (misc:Misc) where misc.tags CONTAINS 'windows' CREATE (misc)-[:IS_A_PACKAGE_OF]->(os);
 
 MATCH (os:OperatingSystem {classType:'Windows'}), (misc:Misc) where misc.tags CONTAINS 'clientOfWindows' CREATE (misc)-[:IS_A_PACKAGE_OF]->(os);
 MATCH (os:OperatingSystem {classType:'Linux'}), (misc:Misc) where misc.tags CONTAINS 'clientOfLinux' CREATE (misc)-[:IS_A_PACKAGE_OF]->(os);
 MATCH (os:OperatingSystem {classType:'macOS'}), (misc:Misc) where misc.tags CONTAINS 'clientOfMac' CREATE (misc)-[:IS_A_PACKAGE_OF]->(os);
 
-CREATE INDEX ON :Port(defaultPort);
-CREATE INDEX ON :Port(serviceName);
-CREATE INDEX ON :OperatingSystem(name);
-MATCH (n) SET n:AllNodes;
-CREATE INDEX ON :AllNodes(keyword);
+MATCH (n) SET n:CommonNode;
+CREATE INDEX ON :CommonNode(keyword);
+CREATE INDEX ON :CommonNode(defaultPort);

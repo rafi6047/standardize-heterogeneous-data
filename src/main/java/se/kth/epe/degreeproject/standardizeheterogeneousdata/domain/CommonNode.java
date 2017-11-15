@@ -7,23 +7,26 @@ import org.neo4j.ogm.annotation.NodeEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @NodeEntity
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Port {
+public class CommonNode {
 
     @GraphId
     @JsonIgnore
     private Long nodeId;
 
-    String defaultPort;
     String classType;
-    String serviceName;
+    String name;
     String description;
     String entry;
     String source;
+    String tags;
     String keyword;
     String learnedKeywordList;
+    List<String> pathToRootList;
+    String defaultPort;
 
     public Long getNodeId() {
         return nodeId;
@@ -33,24 +36,20 @@ public class Port {
         this.nodeId = nodeId;
     }
 
-    public String getDefaultPort() {
-        return defaultPort;
-    }
-
-    public void setDefaultPort(String defaultPort) {
-        this.defaultPort = defaultPort;
-    }
-
     public String getClassType() {
         return classType;
     }
 
-    public String getServiceName() {
-        return serviceName;
+    public void setClassType(String classType) {
+        this.classType = classType;
     }
 
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -69,10 +68,6 @@ public class Port {
         this.entry = entry;
     }
 
-    public void setClassType(String classType) {
-        this.classType = classType;
-    }
-
     public String getSource() {
         return source;
     }
@@ -81,11 +76,19 @@ public class Port {
         this.source = source;
     }
 
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
     public String getKeyword() {
         return keyword;
     }
 
-    public void setKeywordList(String keyword) {
+    public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
 
@@ -113,5 +116,28 @@ public class Port {
 
     public void setLearnedKeywordList(String learnedKeywordList) {
         this.learnedKeywordList = learnedKeywordList;
+    }
+
+    public List<String> getPathToRootList() {
+        return pathToRootList;
+    }
+
+    public void setPathToRootList(List<String> pathToRootList) {
+        this.pathToRootList = pathToRootList;
+    }
+
+    public void addPathToRootList(String pathToRoot) {
+        if (this.pathToRootList == null) {
+            this.pathToRootList = new ArrayList<>();
+        }
+        this.pathToRootList.add(pathToRoot);
+    }
+
+    public String getDefaultPort() {
+        return defaultPort;
+    }
+
+    public void setDefaultPort(String defaultPort) {
+        this.defaultPort = defaultPort;
     }
 }
