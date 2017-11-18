@@ -18,7 +18,7 @@ public interface CommonNodeRepository extends GraphRepository<CommonNode> {
     CommonNode findFirstByKeyword(String keyword);
     CommonNode findFirstByClassType(String classType);
     CommonNode findByDefaultPort(String defaultPort);
-    CommonNode findByLearnedKeywordListContaining(String serviceName);
+    List<CommonNode> findByLearnedKeywordListContaining(String serviceName);
 
 
     @Query("START startNode = node({startId}), endNode = node({endId})" +
