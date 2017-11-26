@@ -71,8 +71,9 @@ public class NetstatFileAdapter {
 
         // if still not found then search service name in learned keyword list
         if (portNode == null) {
-            portNode = commonNodeRepository.findByLearnedKeywordListContaining(serviceNameInRequest).get(0);
-            if (portNode != null) {
+            List<CommonNode> learned = commonNodeRepository.findByLearnedKeywordListContaining(serviceNameInRequest);
+            if ((learned != null) && (learned.size() > 0)) {
+                portNode = learned.get(0);
                 portNode.setEntry("learned");
                 portNode.setSource("Machine learning");
             }
