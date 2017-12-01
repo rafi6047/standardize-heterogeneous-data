@@ -36,7 +36,7 @@ public class InstalledFileAdapter {
             String key = packageName[0];
 
             if (!key.isEmpty()) {
-                commonNodeList.addAll(commonNodeRepository.findByKeyword(key));
+                commonNodeList.addAll(commonNodeRepository.findAllByKeyword(key));
                 commonNodeList.forEach(node -> node.addPathToRootList(commonNodeRepository.findAllPaths(node.getNodeId(), rootNodeId).toString()));
 
                 if (modelTypeMap.containsKey(key)) {

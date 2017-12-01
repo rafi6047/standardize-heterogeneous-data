@@ -9,6 +9,7 @@ docker run   \
 user: neo4j
 password: neo4js
 
+main command to run to populate neo4j db:
 cat /Users/Rafi/IntellijProjects/standardize-heterogeneous-data/src/main/resources/datafiles/neo4j-commands.cypher | docker exec --interactive  data_ontology bin/cypher-shell -u neo4j -p neo4js --format plain
 
 mkdir plugins

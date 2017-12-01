@@ -1,6 +1,6 @@
 LOAD CSV WITH HEADERS FROM "file:///datafiles/ports.csv" AS row CREATE (port:Port { classType: row.classType, defaultPort: row.defaultPort, keyword: row.serviceName, name: row.serviceName, description: row.serviceDescription, entry: row.entry, source: row.source});
 
-LOAD CSV WITH HEADERS FROM "file:///datafiles/operatingSystems.csv" AS row CREATE (operatingSystem:OperatingSystem { classType: row.classType, keyword: row.name, name: row.name,version: row.version,entry: row.entry,source: row.source,tags: row.tags,ESP_DEP: row.ESP_DEP,ASLR: row.ASLR,SEHOP: row.SEHOP,UAC: row.UAC,DNSSEC: row.DNSSEC,Encryption: row.Encryption,Cryptography: row.Cryptography,Firewall_Defender: row.Firewall_Defender,Authentication: row.Authentication});
+LOAD CSV WITH HEADERS FROM "file:///datafiles/operatingSystems.csv" AS row CREATE (operatingSystem:OperatingSystem { classType: row.classType, producer: row.producer, keyword: row.name, name: row.name,version: row.version,entry: row.entry,source: row.source,tags: row.tags,ESP_DEP: row.ESP_DEP,ASLR: row.ASLR,SEHOP: row.SEHOP,UAC: row.UAC,DNSSEC: row.DNSSEC,Encryption: row.Encryption,Cryptography: row.Cryptography,Firewall_Defender: row.Firewall_Defender,Authentication: row.Authentication});
 
 LOAD CSV WITH HEADERS FROM "file:///datafiles/misc.csv" AS row CREATE (misc:Misc { classType: row.classType, keyword: row.name, description: row.description, name: row.name,entry: row.entry,source: row.source,tags: row.tags});
 

@@ -2,10 +2,7 @@ package se.kth.epe.degreeproject.standardizeheterogeneousdata.adapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.kth.epe.degreeproject.standardizeheterogeneousdata.domain.Port;
-import se.kth.epe.degreeproject.standardizeheterogeneousdata.repository.PortRepository;
 
 import java.util.Arrays;
 import java.util.HashMap;

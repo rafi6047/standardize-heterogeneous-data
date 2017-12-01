@@ -42,7 +42,7 @@ public class SystemctlFileAdapter {
             String key = serviceNames.get(0);
             String keyWord = serviceNames.get(0).replace(".service", "");
             if (!key.isEmpty()) {
-                List<CommonNode> commonNodeListFromDB = commonNodeRepository.findByKeyword(keyWord);
+                List<CommonNode> commonNodeListFromDB = commonNodeRepository.findAllByKeyword(keyWord);
                 if (commonNodeListFromDB.isEmpty()) {
                     commonNodeListFromDB = commonNodeRepository.findByLearnedKeywordListContaining(keyWord);
                     commonNodeList.forEach(node -> {

@@ -12,6 +12,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import se.kth.epe.degreeproject.standardizeheterogeneousdata.domain.CommonNode;
 import se.kth.epe.degreeproject.standardizeheterogeneousdata.repository.CommonNodeRepository;
+import se.kth.epe.degreeproject.standardizeheterogeneousdata.similarityalgorithms.StringSetSimilarityUtil;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,13 +20,22 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class MSPowerShellFileAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(MSPowerShellFileAdapter.class);
+
+    private static final String regexToSplit = "[ |,|-]";
+    private static final double acceptedSimilarity = 0.5;
+
+    private static final boolean useJaccard = false;
+
 
     @Autowired
     private CommonNodeRepository commonNodeRepository;
@@ -51,6 +61,16 @@ public class MSPowerShellFileAdapter {
 
     private void getInfo(Map<String, Object> modelTypeMap, NodeList msList) {
 
+        List<String> keywordList = commonNodeRepository.findAllKeywords();
+
+        Map<String, Set<String>> keywordMapSplitted = new HashMap<>();
+
+        Set<String> keywordSetLocal;
+
+        for (String keyword : keywordList) {
+            keywordMapSplitted.put(keyword, new HashSet<>(Arrays.asList(keyword.toLowerCase().split(regexToSplit))));
+        }
+
         Long rootNodeId = commonNodeRepository.findFirstByClassType("OntologyRoot").getNodeId();
 
         int counter = 0;
@@ -58,7 +78,6 @@ public class MSPowerShellFileAdapter {
         for (int ms = 0; ms < msList.getLength(); ms++) {
             String key = null;
             String parsedValue = null;
-            String valueFromDB = null;
             List<CommonNode> commonNodeList = new ArrayList<>();
 
             Node msNode = msList.item(ms);
@@ -66,7 +85,7 @@ public class MSPowerShellFileAdapter {
 
             NodeList sList = msElement.getElementsByTagName("S");
 
-            for ( int i = 0; i < sList.getLength(); i++) {
+            for (int i = 0; i < sList.getLength(); i++) {
 
                 Node sNode = sList.item(i);
 
@@ -78,8 +97,27 @@ public class MSPowerShellFileAdapter {
                         if (key == null) {
                             key = sElement.getTextContent();
                         }
-                        commonNodeList.addAll(commonNodeRepository.findByKeyword(sElement.getTextContent()));
+                        fillUpCommonNodeList(keywordMapSplitted, commonNodeList, sElement);
                         parsedValue = (parsedValue == null ? "DisplayName: " + sElement.getTextContent() : parsedValue + ", DisplayName: " + sElement.getTextContent());
+                    } else if (sElement.getAttribute("N").equalsIgnoreCase("Product")) {
+                        if (key == null) {
+                            key = sElement.getTextContent();
+                        }
+                        fillUpCommonNodeList(keywordMapSplitted, commonNodeList, sElement);
+                        parsedValue = (parsedValue == null ? "Product: " + sElement.getTextContent() : parsedValue + ", Product: " + sElement.getTextContent());
+                    } else if (sElement.getAttribute("N").equalsIgnoreCase("name")) {
+                        if (key == null) {
+                            key = sElement.getTextContent();
+                        }
+                        fillUpCommonNodeList(keywordMapSplitted, commonNodeList, sElement);
+
+                        parsedValue = (parsedValue == null ? "name: " + sElement.getTextContent() : parsedValue + ", name: " + sElement.getTextContent());
+                    } else if (sElement.getAttribute("N").equalsIgnoreCase("ElementName")) {
+                        if (key == null) {
+                            key = sElement.getTextContent();
+                        }
+                        fillUpCommonNodeList(keywordMapSplitted, commonNodeList, sElement);
+                        parsedValue = (parsedValue == null ? "ElementName: " + sElement.getTextContent() : parsedValue + ", ElementName: " + sElement.getTextContent());
                     } else if (sElement.getAttribute("N").equalsIgnoreCase("Publisher")) {
                         if (key == null) {
                             key = sElement.getTextContent();
@@ -100,23 +138,11 @@ public class MSPowerShellFileAdapter {
                             key = sElement.getTextContent();
                         }
                         parsedValue = (parsedValue == null ? "Description: " + sElement.getTextContent() : parsedValue + ", Description: " + sElement.getTextContent());
-                    } else if (sElement.getAttribute("N").equalsIgnoreCase("Product")) {
-                        if (key == null) {
-                            key = sElement.getTextContent();
-                        }
-                        commonNodeList.addAll(commonNodeRepository.findByKeyword(sElement.getTextContent()));
-                        parsedValue = (parsedValue == null ? "Product: " + sElement.getTextContent() : parsedValue + ", Product: " + sElement.getTextContent());
                     } else if (sElement.getAttribute("N").equalsIgnoreCase("Company")) {
                         if (key == null) {
                             key = sElement.getTextContent();
                         }
                         parsedValue = (parsedValue == null ? "Company: " + sElement.getTextContent() : parsedValue + ", Company: " + sElement.getTextContent());
-                    } else if (sElement.getAttribute("N").equalsIgnoreCase("name")) {
-                        if (key == null) {
-                            key = sElement.getTextContent();
-                        }
-                        commonNodeList.addAll(commonNodeRepository.findByKeyword(sElement.getTextContent()));
-                        parsedValue = (parsedValue == null ? "name: " + sElement.getTextContent() : parsedValue + ", name: " + sElement.getTextContent());
                     } else if (sElement.getAttribute("N").equalsIgnoreCase("objectClass")) {
                         if (key == null) {
                             key = sElement.getTextContent();
@@ -142,12 +168,6 @@ public class MSPowerShellFileAdapter {
                             key = sElement.getTextContent();
                         }
                         parsedValue = (parsedValue == null ? "DriverProvider: " + sElement.getTextContent() : parsedValue + ", DriverProvider: " + sElement.getTextContent());
-                    } else if (sElement.getAttribute("N").equalsIgnoreCase("ElementName")) {
-                        if (key == null) {
-                            key = sElement.getTextContent();
-                        }
-                        commonNodeList.addAll(commonNodeRepository.findByKeyword(sElement.getTextContent()));
-                        parsedValue = (parsedValue == null ? "ElementName: " + sElement.getTextContent() : parsedValue + ", ElementName: " + sElement.getTextContent());
                     } else if (sElement.getAttribute("N").equalsIgnoreCase("InterfaceDescription")) {
                         if (key == null) {
                             key = sElement.getTextContent();
@@ -161,7 +181,7 @@ public class MSPowerShellFileAdapter {
 
             if (key != null) {
                 if (modelTypeMap.containsKey(key)) {
-                    key = key + "_" + (counter++) ;
+                    key = key + "_" + (counter++);
                 }
 
                 Map<String, Object> internal = new HashMap<>();
@@ -170,6 +190,36 @@ public class MSPowerShellFileAdapter {
 
                 modelTypeMap.put(key, internal);
             }
+        }
+    }
+
+    private void fillUpCommonNodeList(Map<String, Set<String>> keywordMapSplitted, List<CommonNode> commonNodeList, Element sElement) {
+        Set<String> keywordSetLocal;
+        keywordSetLocal = new HashSet<>(Arrays.asList(sElement.getTextContent().toLowerCase().split(regexToSplit)));
+        double similarityTemp = 0;
+        double similarity = 0;
+        String keywordWithBestMatch = null;
+
+        for (Map.Entry<String, Set<String>> entry : keywordMapSplitted.entrySet()) {
+            similarityTemp = useJaccard ? StringSetSimilarityUtil.getJaccardSimilarity(keywordSetLocal, entry.getValue())
+                    : StringSetSimilarityUtil.getRafiSimilarity(keywordSetLocal, entry.getValue());
+            if (similarityTemp >= acceptedSimilarity && similarityTemp > similarity) {
+                similarity = similarityTemp;
+                keywordWithBestMatch = entry.getKey();
+            }
+        }
+        if (keywordWithBestMatch != null) {
+            LOGGER.info("Best match for '" + sElement.getTextContent() + "': '"
+                    + keywordWithBestMatch + "' with " + (useJaccard ? "Jaccard " : "Rafi ") + "similarity: " + similarity);
+            List<CommonNode> commonNodeListLocal = commonNodeRepository.findAllByKeyword(keywordWithBestMatch);
+            for (CommonNode commonNode : commonNodeListLocal) {
+                if (useJaccard) {
+                    commonNode.setJaccardSimilarity(similarity);
+                } else {
+                    commonNode.setRafiSimilarity(similarity);
+                }
+            }
+            commonNodeList.addAll(commonNodeListLocal);
         }
     }
 

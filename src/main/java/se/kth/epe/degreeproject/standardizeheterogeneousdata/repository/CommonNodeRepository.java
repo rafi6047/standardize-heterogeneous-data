@@ -14,7 +14,7 @@ public interface CommonNodeRepository extends GraphRepository<CommonNode> {
 
     List<CommonNode> findAllByName(String name);
     List<CommonNode> findByNodeId(Long nodeId);
-    List<CommonNode> findByKeyword(String keyword);
+    List<CommonNode> findAllByKeyword(String keyword);
     CommonNode findFirstByKeyword(String keyword);
     CommonNode findFirstByClassType(String classType);
     CommonNode findByDefaultPort(String defaultPort);
@@ -25,4 +25,7 @@ public interface CommonNodeRepository extends GraphRepository<CommonNode> {
             "            MATCH paths = (startNode)-[*]->(endNode)" +
             "            RETURN nodes(paths) AS nodes, EXTRACT(node IN nodes(paths) | ID(node)) AS ids")
     Iterable<Map<String, Iterable<Object>>> findAllPaths(@Param("startId") long startId, @Param("endId") long endId);
+
+    @Query("match (n) where n.keyword is not null return n.keyword;")
+    List<String> findAllKeywords();
 }
