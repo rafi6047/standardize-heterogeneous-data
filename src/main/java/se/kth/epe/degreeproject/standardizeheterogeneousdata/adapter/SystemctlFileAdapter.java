@@ -1,5 +1,7 @@
 package se.kth.epe.degreeproject.standardizeheterogeneousdata.adapter;
 
+import info.debatty.java.stringsimilarity.Jaccard;
+import info.debatty.java.stringsimilarity.JaroWinkler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,20 @@ import java.util.Map;
 public class SystemctlFileAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemctlFileAdapter.class);
 
+    private static final double acceptedSimilarity = 0.5;
+    private JaroWinkler jaroWinkler = new JaroWinkler();
+    private Jaccard jaccard = new Jaccard();
+
     @Autowired
     private CommonNodeRepository commonNodeRepository;
 
-    public Map<String, Object> parseInstalledFile(final String systemctl) {
-        Long rootNodeId = commonNodeRepository.findFirstByClassType("OntologyRoot").getNodeId();
+    @Autowired
+    private CommonNodeUtil commonNodeUtil;
 
-        Map<String, Object>  modelTypeMap = new HashMap<>();
+    public Map<String, Object> parseInstalledFile(final String systemctl) {
+        List<String> keywordListFromDB = commonNodeUtil.getKeywordListFromDB();
+
+        Map<String, Object> modelTypeMap = new HashMap<>();
         List<String> lines = Arrays.asList(systemctl.split("\\r\\n|\\n|\\r"));
 
         lines = lines.subList(1, lines.size());
@@ -42,7 +51,7 @@ public class SystemctlFileAdapter {
             String key = serviceNames.get(0);
             String keyWord = serviceNames.get(0).replace(".service", "");
             if (!key.isEmpty()) {
-                List<CommonNode> commonNodeListFromDB = commonNodeRepository.findAllByKeyword(keyWord);
+                List<CommonNode> commonNodeListFromDB = getCommonNodeList(keywordListFromDB, keyWord);
                 if (commonNodeListFromDB.isEmpty()) {
                     commonNodeListFromDB = commonNodeRepository.findByLearnedKeywordListContaining(keyWord);
                     commonNodeList.forEach(node -> {
@@ -53,10 +62,10 @@ public class SystemctlFileAdapter {
                     });
                 }
                 commonNodeList.addAll(commonNodeListFromDB);
-                commonNodeList.forEach(node -> node.addPathToRootList(commonNodeRepository.findAllPaths(node.getNodeId(), rootNodeId).toString()));
+                commonNodeList.forEach(node -> node.setPathToRootList(commonNodeUtil.getAllPathsToRoot(node)));
 
                 if (modelTypeMap.containsKey(key)) {
-                    key = key + "_" + (counter++) ;
+                    key = key + "_" + (counter++);
                 }
 
                 Map<String, Object> internal = new HashMap<>();
@@ -69,4 +78,32 @@ public class SystemctlFileAdapter {
 
         return modelTypeMap;
     }
+
+    private List<CommonNode> getCommonNodeList(List<String> keywordListFromDB, String keywordToMatch) {
+        List<CommonNode> commonNodeList = new ArrayList<>();
+
+        double similarityTemp = 0;
+        double similarity = 0;
+        String keywordWithBestMatch = null;
+
+        for (String keyword : keywordListFromDB) {
+            similarityTemp = jaccard.similarity(keyword, keywordToMatch);
+            if (similarityTemp >= acceptedSimilarity && similarityTemp > similarity) {
+                similarity = similarityTemp;
+                keywordWithBestMatch = keyword;
+            }
+        }
+        if (keywordWithBestMatch != null) {
+            LOGGER.info("Best match for '" + keywordToMatch + "': '"
+                    + keywordWithBestMatch + "' with Jaccard similarity: " + similarity);
+            List<CommonNode> commonNodeListLocal = commonNodeRepository.findAllByKeyword(keywordWithBestMatch);
+            for (CommonNode commonNode : commonNodeListLocal) {
+                commonNode.setJaccardSimilarity(similarity);
+            }
+            commonNodeList.addAll(commonNodeListLocal);
+        }
+
+        return commonNodeList;
+    }
+
 }

@@ -31,14 +31,15 @@ import java.util.Set;
 public class MSPowerShellFileAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(MSPowerShellFileAdapter.class);
 
-    private static final String regexToSplit = "[ |,|-]";
     private static final double acceptedSimilarity = 0.5;
 
     private static final boolean useJaccard = false;
 
-
     @Autowired
     private CommonNodeRepository commonNodeRepository;
+
+    @Autowired
+    private CommonNodeUtil commonNodeUtil;
 
     public Map<String, Object> parseFile(final String xml) throws ParserConfigurationException, IOException, SAXException {
         Map<String, Object> modelTypeMap = new HashMap<>();
@@ -61,17 +62,7 @@ public class MSPowerShellFileAdapter {
 
     private void getInfo(Map<String, Object> modelTypeMap, NodeList msList) {
 
-        List<String> keywordList = commonNodeRepository.findAllKeywords();
-
-        Map<String, Set<String>> keywordMapSplitted = new HashMap<>();
-
-        Set<String> keywordSetLocal;
-
-        for (String keyword : keywordList) {
-            keywordMapSplitted.put(keyword, new HashSet<>(Arrays.asList(keyword.toLowerCase().split(regexToSplit))));
-        }
-
-        Long rootNodeId = commonNodeRepository.findFirstByClassType("OntologyRoot").getNodeId();
+        Map<String, Set<String>> keywordMapSplitted = commonNodeUtil.getKeywordMapSplitted();
 
         int counter = 0;
 
@@ -177,7 +168,7 @@ public class MSPowerShellFileAdapter {
                 }
             }
 
-            commonNodeList.forEach(node -> node.addPathToRootList(commonNodeRepository.findAllPaths(node.getNodeId(), rootNodeId).toString()));
+            commonNodeList.forEach(node -> node.setPathToRootList(commonNodeUtil.getAllPathsToRoot(node)));
 
             if (key != null) {
                 if (modelTypeMap.containsKey(key)) {
@@ -195,7 +186,7 @@ public class MSPowerShellFileAdapter {
 
     private void fillUpCommonNodeList(Map<String, Set<String>> keywordMapSplitted, List<CommonNode> commonNodeList, Element sElement) {
         Set<String> keywordSetLocal;
-        keywordSetLocal = new HashSet<>(Arrays.asList(sElement.getTextContent().toLowerCase().split(regexToSplit)));
+        keywordSetLocal = new HashSet<>(Arrays.asList(sElement.getTextContent().toLowerCase().split(CommonNodeUtil.regexToSplit)));
         double similarityTemp = 0;
         double similarity = 0;
         String keywordWithBestMatch = null;

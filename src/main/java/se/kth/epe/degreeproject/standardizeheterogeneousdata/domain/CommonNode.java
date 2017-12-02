@@ -58,6 +58,14 @@ public class CommonNode {
         this.classType = classType;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getProducer() {
         return producer;
     }
@@ -66,13 +74,6 @@ public class CommonNode {
         this.producer = producer;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getDescription() {
         return description;

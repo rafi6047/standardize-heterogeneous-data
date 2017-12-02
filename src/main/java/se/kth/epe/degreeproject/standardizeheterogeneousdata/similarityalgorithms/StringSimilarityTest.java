@@ -9,8 +9,8 @@ import info.debatty.java.stringsimilarity.SorensenDice;
 public class StringSimilarityTest {
     public static void main(String[] args) {
 
-        String s1 = "ssh".toLowerCase();
-        String s2 = "sshd".toLowerCase();
+        String s1 = "systemd-vconsole-setup".toLowerCase();
+        String s2 = "system-monitor".toLowerCase();
 //        String s1 = "Microsoft Visual C++ 2008 Redistributable - x64 9.0.30729.6161".toLowerCase();
 //        String s2 = "Microsoft Visual C++ 2015 x86 Additional Runtime - 14.0.23026".toLowerCase();
 //        String s2 = "Microsoft Visual C++ Redistributable".toLowerCase();
