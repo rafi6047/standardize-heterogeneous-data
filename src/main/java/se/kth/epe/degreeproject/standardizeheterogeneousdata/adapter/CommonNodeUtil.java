@@ -1,5 +1,6 @@
 package se.kth.epe.degreeproject.standardizeheterogeneousdata.adapter;
 
+import org.neo4j.ogm.response.model.RelationshipModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.kth.epe.degreeproject.standardizeheterogeneousdata.domain.CommonNode;
@@ -46,24 +47,32 @@ public class CommonNodeUtil {
     }
 
     public List<String> getAllPathsToRoot(CommonNode node) {
-        List<String> allPaths = new ArrayList<>();
-        Iterable<Map<String, Iterable<Object>>> testNodePath = commonNodeRepository.findAllPaths(node.getNodeId(), getRootNode());
-        for (Map<String, Iterable<Object>> stringIterableMap : testNodePath) {
+        List<String> allPathsStringList = new ArrayList<>();
+        Iterable<Map<String, Iterable<Object>>> allPathsToRoot = commonNodeRepository.findAllPaths(node.getNodeId(), getRootNode());
+        for (Map<String, Iterable<Object>> stringIterableMap : allPathsToRoot) {
+            String thisPath = null;
             for (Map.Entry<String, Iterable<Object>> entry : stringIterableMap.entrySet()) {
                 if (entry.getKey().equals("nodes")) {
-                    String thisPath = null;
                     for (Object o : entry.getValue()) {
                         if (thisPath == null) {
-                            thisPath = ((CommonNode) o).getClassType().toString();
+                            thisPath = ((CommonNode) o).getClassType();
                         } else {
-                            thisPath = thisPath + " -> " + ((CommonNode) o).getClassType().toString();
+                            thisPath = thisPath + " -> " + ((CommonNode) o).getClassType();
                         }
                     }
-                    allPaths.add(thisPath);
+                } else if (entry.getKey().equals("relationships")) {
+                    for (Object o : entry.getValue()) {
+                        if (thisPath != null) {
+                            thisPath = thisPath.replaceFirst(" -> ", " -[" + ((RelationshipModel) o).getType() + "]-> " );
+                        }
+                    }
                 }
             }
+            if (thisPath != null) {
+                allPathsStringList.add(thisPath);
+            }
         }
-        return allPaths;
+        return allPathsStringList;
     }
 
 }

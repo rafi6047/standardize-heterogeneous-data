@@ -23,7 +23,7 @@ public interface CommonNodeRepository extends GraphRepository<CommonNode> {
 
     @Query("START startNode = node({startId}), endNode = node({endId})" +
             "            MATCH paths = (startNode)-[*]->(endNode)" +
-            "            RETURN nodes(paths) AS nodes, EXTRACT(node IN nodes(paths) | ID(node)) AS ids")
+            "            RETURN nodes(paths) AS nodes, EXTRACT(node IN nodes(paths) | ID(node)) AS ids, relationships(paths) as relationships")
     Iterable<Map<String, Iterable<Object>>> findAllPaths(@Param("startId") long startId, @Param("endId") long endId);
 
     @Query("match (n) where n.keyword is not null return n.keyword;")
