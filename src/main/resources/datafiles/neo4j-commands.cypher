@@ -2,7 +2,7 @@ LOAD CSV WITH HEADERS FROM "file:///datafiles/ports.csv" AS row CREATE (port:Por
 
 LOAD CSV WITH HEADERS FROM "file:///datafiles/operatingSystems.csv" AS row CREATE (operatingSystem:OperatingSystem { classType: row.classType, producer: row.producer, keyword: row.name, name: row.name,version: row.version,entry: row.entry,source: row.source,tags: row.tags,ESP_DEP: row.ESP_DEP,ASLR: row.ASLR,SEHOP: row.SEHOP,UAC: row.UAC,DNSSEC: row.DNSSEC,Encryption: row.Encryption,Cryptography: row.Cryptography,Firewall_Defender: row.Firewall_Defender,Authentication: row.Authentication});
 
-LOAD CSV WITH HEADERS FROM "file:///datafiles/misc.csv" AS row CREATE (misc:Misc { classType: row.classType, keyword: row.name, description: row.description, name: row.name,entry: row.entry,source: row.source,tags: row.tags});
+LOAD CSV WITH HEADERS FROM "file:///datafiles/misc.csv" AS row CREATE (misc:Misc { classType: row.classType, keyword: row.name, producer: row.producer, description: row.description, name: row.name,entry: row.entry,source: row.source,tags: row.tags});
 
 CREATE (commonPorts:CommonPorts{classType: "CommonPorts"})
 CREATE (ontologyRoot:OntologyRoot{classType: "OntologyRoot"})
@@ -21,8 +21,8 @@ CREATE (server:Server{classType: "Server"})
 CREATE (databaseServer:Server{classType: "DatabaseServer"})
 CREATE (applicationServer:Server{classType: "ApplicationServer"})
 CREATE
-  (commonPorts)-[:IS_PART_OF]->(ontologyRoot),
-  (software)-[:IS_A]->(ontologyRoot),
+  (commonPorts)-[:BELONGS_TO]->(ontologyRoot),
+  (software)-[:BELONGS_TO]->(ontologyRoot),
   (client)-[:IS_A]->(software),
   (operatingSystem)-[:IS_A]->(software),
   (windows)-[:IS_A]->(operatingSystem),
@@ -53,10 +53,14 @@ MATCH (os:OperatingSystem), (server:Server) where os.tags CONTAINS 'server' CREA
 MATCH (vs:VulnerabilityScanner), (misc:Misc) where misc.tags CONTAINS 'VulnerabilityScanner' CREATE (misc)-[:IS_A]->(vs);
 MATCH (os:OperatingSystem {classType:'Windows'}), (misc:Misc) where misc.tags CONTAINS 'WindowsPackage' CREATE (misc)-[:IS_A_PACKAGE_OF]->(os);
 MATCH (os:OperatingSystem {classType:'Windows'}), (misc:Misc) where misc.tags CONTAINS 'windows' CREATE (misc)-[:IS_A_PACKAGE_OF]->(os);
+MATCH (applicationServer:Server), (misc:Misc) where misc.tags CONTAINS 'applicationServer' CREATE (misc)-[:IS_A]->(applicationServer);
+MATCH (databaseServer:Server), (databaseServerInstance:Misc) where databaseServer.classType='DatabaseServer' and databaseServerInstance.tags CONTAINS 'databaseServer' CREATE (databaseServerInstance)-[:IS_A]->(databaseServer);
 
 MATCH (os:OperatingSystem {classType:'Windows'}), (misc:Misc) where misc.tags CONTAINS 'clientOfWindows' CREATE (misc)-[:IS_A_PACKAGE_OF]->(os);
 MATCH (os:OperatingSystem {classType:'Linux'}), (misc:Misc) where misc.tags CONTAINS 'clientOfLinux' CREATE (misc)-[:IS_A_PACKAGE_OF]->(os);
 MATCH (os:OperatingSystem {classType:'macOS'}), (misc:Misc) where misc.tags CONTAINS 'clientOfMac' CREATE (misc)-[:IS_A_PACKAGE_OF]->(os);
+
+MATCH (os:OperatingSystem {classType:'Windows'}), (misc:Misc) where misc.classType CONTAINS 'WindowsUser' CREATE (misc)-[:IS_A_USER_OF]->(os);
 
 MATCH (n) SET n:CommonNode;
 CREATE INDEX ON :CommonNode(keyword);
