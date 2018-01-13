@@ -135,8 +135,8 @@ Port,85/tcp,"mit-ml-dev","MIT ML Device",manual,https://www.iana.org/assignments
 Port,85/udp,"mit-ml-dev","MIT ML Device",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
 Port,86/tcp,"mfcobol","Micro Focus Cobol",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
 Port,86/udp,"mfcobol","Micro Focus Cobol",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
-Port,88/tcp,"kerberos","Kerberos",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
-Port,88/udp,"kerberos","Kerberos",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
+Port,88/tcp,"Kerberos authentication system","Kerberos",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
+Port,88/udp,"Kerberos authentication system","Kerberos",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
 Port,89/tcp,"su-mit-tg","SU/MIT Telnet Gateway",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
 Port,89/udp,"su-mit-tg","SU/MIT Telnet Gateway",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
 Port,90/tcp,"dnsix","DNSIX Securit Attribute Token Map",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
@@ -279,8 +279,8 @@ Port,159/tcp,"nss-routing","NSS-Routing",manual,https://www.iana.org/assignments
 Port,159/udp,"nss-routing","NSS-Routing",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
 Port,160/tcp,"sgmp-traps","SGMP-TRAPS",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
 Port,160/udp,"sgmp-traps","SGMP-TRAPS",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
-Port,161/tcp,"snmp","SNMP",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
-Port,161/udp,"snmp","SNMP",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
+Port,161/tcp,"snmp","Simple Network Management Protocol",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
+Port,161/udp,"snmp","Simple Network Management Protocol",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
 Port,162/tcp,"snmptrap","SNMPTRAP",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
 Port,162/udp,"snmptrap","SNMPTRAP",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
 Port,163/tcp,"cmip-man","CMIP/TCP Manager",manual,https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml

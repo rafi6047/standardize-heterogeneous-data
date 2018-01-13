@@ -1,3 +1,21 @@
+This repository is the implementation for Standardizing heterogeneous data for the purpose of automatic model creation for Enterprise Architecture.
+
+Instruction for running on Unix machine:
+First install Docker for your system.
+
+Clone the code:
+git clone git@github.com:rafi6047/standardize-heterogeneous-data.git
+
+Setting up the database:
+docker run   \
+   --name data_ontology \
+   --publish=7474:7474 --publish=7687:7687 \
+   --volume=$HOME/neo4j/standardize_heterogeneous_data:/data \
+   --volume=$HOME/neo4j/standardize_heterogeneous_data_logs:/logs \
+   --volume=<cloned_project_path>/src/main/resources/datafiles:/var/lib/neo4j/import/datafiles \
+   neo4j:3.2.3
+
+Example:
 docker run   \
    --name data_ontology \
    --publish=7474:7474 --publish=7687:7687 \
@@ -6,31 +24,16 @@ docker run   \
    --volume=$HOME/IntellijProjects/standardize-heterogeneous-data/src/main/resources/datafiles:/var/lib/neo4j/import/datafiles \
    neo4j:3.2.3
 
+You can see if Neo4j is running by browsing:
+http://localhost:7474/browser/
 user: neo4j
-password: neo4js
+password: neo4j
 
-main command to run to populate neo4j db:
+Run following command in the terminal to populate the database:
+cat <cloned_project_path>/src/main/resources/datafiles/neo4j-commands.cypher | docker exec --interactive  data_ontology bin/cypher-shell -u neo4j -p neo4js --format plain
+
+Example:
 cat /Users/Rafi/IntellijProjects/standardize-heterogeneous-data/src/main/resources/datafiles/neo4j-commands.cypher | docker exec --interactive  data_ontology bin/cypher-shell -u neo4j -p neo4js --format plain
 
-mkdir plugins
-pushd plugins
-wget https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.2.3.5/apoc-3.2.3.5-all.jar
-popd
-docker run --rm -e NEO4J_AUTH=none -p 7474:7474 -v $PWD/plugins:/plugins -p 7687:7687 neo4j:3.2.5
-
-
-start n=node:node_auto_index({"visual"}) match (n:Provenance) return n
-                    "order by n.created desc " +
-                    "limit 10";
-
-        String expr = term;
-
-        if(term.contains(" ") || term.contains("\t"))
-            expr = "\"" + term + "\"";
-
-        expr = "'name:" + expr + "~'";
-
-        log.info("search expression=" + expr);
-
-        Map<String,Object>params = new HashMap();
-        params.put("searchCriteria", expr);
+cd to the <cloned_project_path> and the run the program with this command:
+gradle run
